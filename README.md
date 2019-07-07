@@ -2,6 +2,8 @@
 Injecting lua code in working VTF files and then running it
 
 
+[Youtube video](https://www.youtube.com/watch?v=YioOwH6c7As&feature=youtu.be)
+
 `void mat_payload.WriteCodeToVTF(char* identifier, char* lua_code, [optional] char* vtf_to_inject)`
 
 `void* mat_payload.ReadCodeFromVTF(char* path, char* key, int64 offset)`
