@@ -6,7 +6,23 @@ Injecting lua code in working VTF files and then running it
 
 `void mat_payload.WriteCodeToVTF(char* identifier, char* lua_code, [optional] char* vtf_to_inject)`
 
+`identifier` is the name of the vtf, no extension needed, it will go in data/
+
+`lua code` is the payload, ASCII ONLY, no UTF8.
+
+`vtf_to_inject` if you want to use a vtf as a base to make it less suspiscious, nil for empty vtf (65 bytes iirc)
+
+Il also prints a message in the console giving you the key to read it and the offset from where the payload starts
+
+
 `void* mat_payload.ReadCodeFromVTF(char* path, char* key, int64 offset)`
+
+`path` BASE_PATH path of the file to read the payload from
+
+`key` key to read the payload
+
+`offset` where the payload starts
+
 
 Example lua code
 
