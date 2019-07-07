@@ -21,10 +21,25 @@ end
 -- rip ram, we don't have stringBuilder here
 
 
+local lenKeyToGen = 128
+
+local function genRandomKey()
+	local out = {}
+	local i = 1
+	while (i <= lenKeyToGen) do
+		out[i] = math.random(33,126)
+		i = i + 1
+	end
+
+	return string.char(unpack(out))
+
+end
+
+
 
 local function obfuscatePayload(str_lua_code)
-	local secretKey = math.random(10000000000000, 90000000000000)
-	local key = tostring(secretKey)
+	local key = genRandomKey()
+	local keySum = tonumber(util.CRC(key))
 	local keylen = string.len(key)
 	local code_len = string.len(str_lua_code)
 	local codeTBL = {string.byte(str_lua_code, 1, code_len)}
@@ -35,20 +50,20 @@ local function obfuscatePayload(str_lua_code)
 		local i2 = 1
 
 
-		local toadd = tonumber(key[(i % (keylen - 1)) + 1])
+		local toadd = string.byte(key[(i % (keylen - 1)) + 1])
 		while (i2 <= toadd) do
 			codedPayload = codedPayload .. string.char(math.random(177))
 			i2 = i2 + 1
 		end
-		codedPayload = codedPayload .. string.char(rotChar177(codeTBL[i], secretKey))
+		codedPayload = codedPayload .. string.char(rotChar177(codeTBL[i], keySum))
 		i = i + 1
 	end
-	return codedPayload, secretKey
+	return codedPayload, key
 end
 
 
 local function desObfuscatePayload(obfuscated_code, key)
-	local real_key = tonumber(key)
+	local keySum = tonumber(util.CRC(key))
 	local code_len = string.len(obfuscated_code)
 	local keylen = string.len(key)
 	local i = 1
@@ -56,8 +71,8 @@ local function desObfuscatePayload(obfuscated_code, key)
 	local code = {}
 
 	while (i <= code_len) do
-		i = i + tonumber(key[(real_i % (keylen - 1)) + 1])
-		code[real_i] = unRotChar177(string.byte(obfuscated_code[i]), real_key)
+		i = i + string.byte(key[(real_i % (keylen - 1)) + 1])
+		code[real_i] = unRotChar177(string.byte(obfuscated_code[i]), keySum)
 
 		real_i = real_i + 1
 		i = i + 1
@@ -78,9 +93,16 @@ function WriteCodeToVTF(identifier, str_lua_code, custom_vtf_path)
 		base_VTF = file.Read(custom_vtf_path, "BASE_PATH")
 	end
 	file.Write(filename, base_VTF .. payload)
+	MsgC(Color(50,255,50), "███████VTF Injection report███████\n")
+	MsgC(Color(100,255,100), "\tWrote to file : ")
+	MsgC(Color(255,255,100), string.format("\t[garrysmod/data/%s]\n", filename))
+	MsgC(Color(100,255,100), "\tSecret key : ")
+	MsgC(Color(255,255,100), string.format("\t%s\n", secretKey))
+	MsgC(Color(100,255,100), "\tVTF offset : ")
+	MsgC(Color(255,255,100), string.format("\t%s\n", string.len(base_VTF)))
+	MsgC(Color(50,255,50), "███████VTF Injection report END███████\n")
 
-	print(string.format("Wrote to file : [garrysmod/data/%s] with secret key \"%s\", and VTF offset is %i, SAVE ALL OF THESE INFORMATIONS", filename, secretKey, string.len(base_VTF)))
-
+	return secretKey, string.len(base_VTF)
 end
 
 
