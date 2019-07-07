@@ -3,6 +3,7 @@ Injecting lua code in working VTF files and then running it
 
 
 `void mat_payload.WriteCodeToVTF(char* identifier, char* lua_code, [optional] char* vtf_to_inject)`
+
 `void* mat_payload.ReadCodeFromVTF(char* path, char* key, int64 offset)`
 
 Example lua code
