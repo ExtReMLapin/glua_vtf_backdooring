@@ -4,13 +4,25 @@ Injecting lua code in working VTF files and then running it
 
 [Youtube video](https://www.youtube.com/watch?v=YioOwH6c7As&feature=youtu.be)
 
-`void mat_payload.WriteCodeToVTF(char* identifier, char* lua_code, [optional] char* vtf_to_inject)`
+`[char* secret_key, int64 offset] mat_payload.WriteCodeToVTF(char* identifier, char* lua_code, [optional] char* vtf_to_inject)`
 
 `identifier` is the name of the vtf, no extension needed, it will go in data/
 
 `lua code` is the payload, ASCII ONLY, no UTF8.
 
 `vtf_to_inject` if you want to use a vtf as a base to make it less suspiscious, nil for empty vtf (65 bytes iirc)
+
+Returns :
+
+`secret_key` the generated key to "obfuscate the code", needed to read the code, i return it to allow you to automatize stuff
+
+`offset` offset of the payload, same reason as above
+
+It allows you to run stuff like : 
+
+`local func = mat_payload.ReadCodeFromVTF("garrysmod/data/skybox_item_10_tmp.vtf", mat_payload.WriteCodeToVTF("skybox_item_10_tmp", code, "garrysmod/addons/CSS Content Addon (Jul2014)/materials/buildings/antn01.vtf"))`
+
+![https://i.imgur.com/pT3uX3E.png](https://i.imgur.com/pT3uX3E.png)
 
 Il also prints a message in the console giving you the key to read it and the offset from where the payload starts
 
