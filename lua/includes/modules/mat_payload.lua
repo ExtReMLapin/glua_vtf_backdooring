@@ -30,7 +30,7 @@ local function genRandomKey()
 		out[i] = math.random(33,126)
 		i = i + 1
 	end
-
+	--should have used table.concat but whatever
 	return string.char(unpack(out))
 
 end
@@ -49,12 +49,13 @@ local function obfuscatePayload(str_lua_code)
 	while (i <= code_len) do
 		local i2 = 1
 
-
+		-- strings concat could probably use table.concat instead
 		local toadd = string.byte(key[(i % (keylen - 1)) + 1])
 		while (i2 <= toadd) do
 			codedPayload = codedPayload .. string.char(math.random(177))
 			i2 = i2 + 1
 		end
+
 		codedPayload = codedPayload .. string.char(rotChar177(codeTBL[i], keySum))
 		i = i + 1
 	end
