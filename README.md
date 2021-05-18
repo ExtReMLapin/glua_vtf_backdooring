@@ -1,6 +1,8 @@
 # glua_vtf_backdooring
 Injecting lua code in working VTF files and then running it
 
+## **I advise you to implement your own cryptographic algorithm**
+
 
 [Youtube video](https://www.youtube.com/watch?v=YioOwH6c7As&feature=youtu.be)
 
